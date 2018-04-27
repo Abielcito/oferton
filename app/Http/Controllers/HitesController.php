@@ -105,7 +105,16 @@ class HitesController extends Controller
             }
 
 
-            //Buscando precio oferta del item --------------
+            //Buscando imagen del item ---------------
+            $img = $node->filter('.img-responsive')->each(function ($n, $index) {
+
+               $img = $n->extract(array('data-original'));   
+
+               return $img[0];
+
+            });
+
+            $this->products[$index]['img'] = $img[0]; 
         });
 
         $response = [
