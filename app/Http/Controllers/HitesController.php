@@ -15,36 +15,34 @@ class HitesController extends Controller
     
     protected $products = [];
     
-    //REVIAR  Symfony\Component\DomCrawler;
+    //REVIAR  Symfony\Component\DomCrawler; 
     
     public function index()
     {
-        /*$crawler = Goutte::request('GET', 'https://duckduckgo.com/html/?q=Laravel');
-        $nodes = $crawler->filter('.result__title .result__a')->each(function ($node, $index) {
+        $crawler = Goutte::request('GET', 'https://duckduckgo.com/html/?q=Laravel');
+        
+        $nodes = $crawler->filter('.links_main')->each(function ($node, $index) {
+               var_dump('.links_main').'<br>';
 
-           $title = $node->text();
-           $this->products[$index]['title'] = $title; 
+            $title = $node->filter('.result__title .result__a')->each(function ($n, $index) {
 
-           return $title;
+               $title = $n->text();   
+               var_dump('aqui').'<br>';            
 
-        });
+               return $title;
 
-        $links = $crawler->filter('.result__title .result__a')->each(function ($node, $index) {
+            });
 
-            $link = $node->text();
-            $this->products[$index]['link'] = $link;
+            //$this->products[$index]['title'] = $title[0]; 
+            //$array = array_add(['name' => 'Desk'], 'price', 100);
 
-            return $link;
+
 
         });
         
-        $collection = collect($nodes);
+        dd($this->products);
 
-        //$matrix = $collection->combine($links);
-        
-        dd($this->products);*/
-
-        $url = 'https://www.hites.com/tienda/SearchDisplay?categoryId=&storeId=10151&catalogId=10051&langId=-5&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=-1&searchTerm=smart+tv#facet:-7000000000000005744544839,-10027671&productBeginIndex:0&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&';
+        /*$url = 'https://www.hites.com/tienda/SearchDisplay?categoryId=&storeId=10151&catalogId=10051&langId=-5&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=-1&searchTerm=smart+tv#facet:-7000000000000005744544839,-10027671&productBeginIndex:0&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&';
 
         $crawler = Goutte::request('GET', $url);
 
@@ -80,7 +78,7 @@ class HitesController extends Controller
 
         dd($response);
 
-        return view('welcome');
+        return view('welcome');*/
     }
 
 }
