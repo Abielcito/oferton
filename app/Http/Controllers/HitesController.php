@@ -33,10 +33,7 @@ class HitesController extends Controller
 
             });
 
-            //$this->products[$index]['title'] = $title[0]; 
-            //$array = array_add(['name' => 'Desk'], 'price', 100);
-
-
+            $this->products[$index]['title'] = $title[0]; 
 
         });
         
