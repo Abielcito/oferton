@@ -49,9 +49,9 @@ class HitesController extends Controller
             
              $link = $node->filter('.product_name a')->each(function ($n, $index) {
 
-               $link = $n->extract('href');   
+               $link = $n->extract(array('href'));   
 
-               return $link;
+               return $link[0];
 
             });
 
@@ -107,9 +107,6 @@ class HitesController extends Controller
 
             //Buscando precio oferta del item --------------
         });
-
-
-        dd($this->products);
 
         $response = [
             'retail' => 'hites',
