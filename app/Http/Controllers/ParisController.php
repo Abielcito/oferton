@@ -64,12 +64,12 @@ class ParisController extends Controller {
             
             //PRODUCT IMAGE
             $productImage = $node->filter('div.item > a.pdp > img')->each(function ($n, $j) {
-                return $n->attr('src');
+                return $n->extract(array('data-src'));
                 //var_dump($n->attr('src'));                
                 //dd($n->attr('src'));
                 //return $n->extract(array('src'));
             });
-            $productImage = (isset($productImage[0][0])) ? $productImage[0][0] : null;
+            $productImage = (isset($productImage[0][0])) ? trim($productImage[0][0], '?$plp_moda$') : null;
             
             
             $this->products[] = [
@@ -114,69 +114,6 @@ class ParisController extends Controller {
         }
         $discountPercent = (($price - $priceWithDiscount)*100)/$price;
         return $discountPercent;
-    }
-    
-    
-    
-    
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create() {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request) {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id) {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id) {
-        //
     }
 
 }
