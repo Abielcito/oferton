@@ -42,7 +42,7 @@ class MainController extends Controller {
     }
     
     /*
-     * BUSCA LOS DATOS DEL RETAIL POR NOMBRE
+     * VALIDA SI YA EXISTE UNA BUSQUEDA POR EL LINK SOLICITADO
      */
     protected function findStoreCategoryByLink($link){
         $storeCategory = StoreCategory::where('find_by_link',$link)->get();
