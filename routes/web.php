@@ -43,3 +43,10 @@ Route::resource('/falabella', 'FalabellaController');
 Route::resource('/example', 'ExampleController');
 
 
+
+
+Route::resource('stores', 'StoreController');
+
+Route::resource('storeCategories', 'StoreCategoryController');
+
+Route::resource('storeTypes', 'StoreTypeController');
