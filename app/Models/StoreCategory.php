@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class StoreCategory
  * @package App\Models
- * @version April 30, 2018, 6:27 pm UTC
+ * @version April 30, 2018, 7:08 pm UTC
  *
  * @property \App\Models\Store store
  * @property string find_by_link

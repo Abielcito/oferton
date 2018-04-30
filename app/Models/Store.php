@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * Class Store
  * @package App\Models
- * @version April 30, 2018, 6:27 pm UTC
+ * @version April 30, 2018, 7:07 pm UTC
  *
  * @property \App\Models\StoresType storesType
  * @property \Illuminate\Database\Eloquent\Collection StoreCategory
@@ -61,7 +61,7 @@ class Store extends Model
      **/
     public function storesType()
     {
-        return $this->belongsTo(\App\Models\StoresType::class);
+        return $this->belongsTo(\App\Models\StoresTypes::class);
     }
 
     /**

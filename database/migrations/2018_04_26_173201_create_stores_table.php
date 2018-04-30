@@ -20,7 +20,8 @@ class CreateStoresTable extends Migration
             
             $table->unsignedInteger('stores_types_id');
             $table->foreign('stores_types_id')->references('id')->on('stores_types');
-
+            
+            $table->softDeletes();
             $table->timestamps();
         });
     }

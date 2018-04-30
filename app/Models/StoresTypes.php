@@ -6,15 +6,15 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Class StoreType
+ * Class StoresTypes
  * @package App\Models
- * @version April 30, 2018, 6:29 pm UTC
+ * @version April 30, 2018, 7:08 pm UTC
  *
  * @property \Illuminate\Database\Eloquent\Collection Store
  * @property string name
  * @property integer status
  */
-class StoreType extends Model
+class StoresTypes extends Model
 {
     use SoftDeletes;
 

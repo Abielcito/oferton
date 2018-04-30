@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\StoreType;
+use App\Models\StoresTypes;
 
-class CreateStoreTypeRequest extends FormRequest
+class CreateStoresTypesRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class CreateStoreTypeRequest extends FormRequest
      */
     public function rules()
     {
-        return StoreType::$rules;
+        return StoresTypes::$rules;
     }
 }

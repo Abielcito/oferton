@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\StoreType;
+use App\Models\StoresTypes;
 
-class UpdateStoreTypeRequest extends FormRequest
+class UpdateStoresTypesRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class UpdateStoreTypeRequest extends FormRequest
      */
     public function rules()
     {
-        return StoreType::$rules;
+        return StoresTypes::$rules;
     }
 }

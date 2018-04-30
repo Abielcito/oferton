@@ -34,3 +34,9 @@
     <p>{!! $store->updated_at !!}</p>
 </div>
 
+<!-- Deleted At Field -->
+<div class="form-group">
+    {!! Form::label('deleted_at', 'Deleted At:') !!}
+    <p>{!! $store->deleted_at !!}</p>
+</div>
+

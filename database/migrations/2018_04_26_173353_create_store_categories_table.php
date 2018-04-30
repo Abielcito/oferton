@@ -21,7 +21,8 @@ class CreateStoreCategoriesTable extends Migration
 
             $table->unsignedInteger('store_id');
             $table->foreign('store_id')->references('id')->on('stores');
-
+            
+            $table->softDeletes();
             $table->timestamps();
         });
     }

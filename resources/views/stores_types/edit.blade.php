@@ -3,7 +3,7 @@
 @section('content')
     <section class="content-header">
         <h1>
-            Store Type
+            Stores Types
         </h1>
    </section>
    <div class="content">
@@ -11,9 +11,9 @@
        <div class="box box-primary">
            <div class="box-body">
                <div class="row">
-                   {!! Form::model($storeType, ['route' => ['storeTypes.update', $storeType->id], 'method' => 'patch']) !!}
+                   {!! Form::model($storesTypes, ['route' => ['storesTypes.update', $storesTypes->id], 'method' => 'patch']) !!}
 
-                        @include('store_types.fields')
+                        @include('stores_types.fields')
 
                    {!! Form::close() !!}
                </div>

@@ -45,8 +45,14 @@ Route::resource('/example', 'ExampleController');
 
 
 
+
+
+
+
+
+
 Route::resource('stores', 'StoreController');
 
-Route::resource('storeCategories', 'StoreCategoryController');
+Route::resource('storesTypes', 'StoresTypesController');
 
-Route::resource('storeTypes', 'StoreTypeController');
+Route::resource('storeCategories', 'StoreCategoryController');
