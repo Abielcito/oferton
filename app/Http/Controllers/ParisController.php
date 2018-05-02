@@ -15,19 +15,20 @@ class ParisController extends MainController {
      */
     protected $products = [];
     protected $filtersCrawler = [];
-    
+    protected $linksCategories = [];
+
     public function index() {
 
         $store = $this->findStoreByName('paris');
         if (!$store) {
             die('no se encontro el retail');
         }
-        
+
         $this->filtersCrawler = json_decode($store->json_filter);
         $findByLink = 'https://www.paris.cl/webapp/wcs/stores/servlet/SearchDisplay?searchTermScope=&searchType=1000&filterTerm=&orderBy=2&maxPrice=&showResultsPage=true&langId=-5&beginIndex=0&sType=SimpleSearch&metaData=bWZOYW1lX250a19jczoiSFAi&pageSize=&manufacturer=&resultCatEntryType=&catalogId=40000000629&pageView=image&searchTerm=&facet=ads_f21501_ntk_cs%253A%25228GB%2522&minPrice=&categoryId=51206207&storeId=10801';
 
         $storeCategory = $this->findStoreCategoryByLink($findByLink);
-        if(count($storeCategory)>0){
+        if (count($storeCategory) > 0) {
             dd('Ya fue realizada una busqueda por el link solicitado');
         }
 
@@ -110,6 +111,46 @@ class ParisController extends MainController {
         $this->saveStoresCategories($params);
 
         dd($this->products);
+    }
+
+    public function getLinksParis() {
+        $store = $this->findStoreByName('paris');
+        if (!$store) {
+            die('no se encontro el retail');
+        }
+        $findByLink = 'https://www.paris.cl/tienda/es/paris';
+        $crawler = Goutte::request('GET', $findByLink);
+        $node = $crawler->filter('div.row-despliegue')->each(function ($node, $index) {
+            $category = $node->filter('ul.nivel-2 > li > a')->each(function ($nodeCategory, $j) {
+                //CATEGORIA
+                $categoryName = $nodeCategory->text();
+                $categoryLink = $nodeCategory->extract(array('href'));
+                $categoryLink = $categoryLink[0];
+                //SUBCATEGORIA
+                $subCategory = $nodeCategory->siblings();
+                $subCategoryArray = $subCategory->filter('ul.nivel-3 > li.menu-item > a')->each(function ($n, $j) {
+                    return $n->extract(array('href'));
+                });
+
+                $subCategoryLink = [];
+                foreach ($subCategoryArray as $row) {
+                    $subCategoryLink[] = $row[0];
+                }
+
+                //RETORNA ARRAY FORMATEADO
+                return [
+                    'categoryName' => trim($categoryName)
+                    , 'category' => $categoryLink
+                    , 'subCategory' => $subCategoryLink
+                ];
+            });
+
+            $this->linksCategories[] = $category;
+        });
+
+        //$this->updateStoreLinks(json_encode($this->linksCategories), $store->id);
+
+        dd($this->linksCategories);
     }
 
 }

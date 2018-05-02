@@ -42,6 +42,18 @@ class MainController extends Controller {
     }
     
     /*
+     * BUSCA LOS DATOS DEL RETAIL POR NOMBRE
+     */
+    protected function updateStoreLinks($links,$id){
+        if(Store::where('id',$id)->update(['json_category_link'=>$links])){
+            return true;
+        }else{
+            return false;
+        }
+    }    
+    
+    
+    /*
      * VALIDA SI YA EXISTE UNA BUSQUEDA POR EL LINK SOLICITADO
      */
     protected function findStoreCategoryByLink($link){
