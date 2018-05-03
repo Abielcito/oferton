@@ -29,43 +29,43 @@ class MainController extends Controller {
         return $discountPercent;
     }
 
-    
     /*
      * BUSCA LOS DATOS DEL RETAIL POR NOMBRE
      */
-    protected function findStoreByName($name){
-        $store = Store::where('name',$name)->get();
-        if(count($store)==0){
+
+    protected function findStoreByName($name) {
+        $store = Store::where('name', $name)->get();
+        if (count($store) == 0) {
             return false;
         }
         return $store[0];
     }
-    
+
     /*
-     * BUSCA LOS DATOS DEL RETAIL POR NOMBRE
+     * ACTUALIZA JSON DE CATEGORIAS Y SUBCATEGORIAS DE CADA RETAIL
      */
-    protected function updateStoreLinks($links,$id){
-        if(Store::where('id',$id)->update(['json_category_link'=>$links])){
+
+    protected function updateStoreLinks($links, $id) {
+        if (Store::where('id', $id)->update(['json_category_link' => $links])) {
             return true;
-        }else{
+        } else {
             return false;
         }
-    }    
-    
-    
+    }
+
     /*
      * VALIDA SI YA EXISTE UNA BUSQUEDA POR EL LINK SOLICITADO
      */
-    protected function findStoreCategoryByLink($link){
-        $storeCategory = StoreCategory::where('find_by_link',$link)->get();
+
+    protected function findStoreCategoryByLink($link) {
+        $storeCategory = StoreCategory::where('find_by_link', $link)->get();
         return $storeCategory;
     }
-    
-    
-    
+
     /*
      * GUARDAR NUEVA BUSQUEDA DE OFERTAS EN RETAIL
      */
+
     protected function saveStoresCategories($params) {
         $storeCategory = new StoreCategory();
 
@@ -76,4 +76,78 @@ class MainController extends Controller {
         $storeCategory->save();
     }
 
+    /*
+     * A PARTIR DE UN JSON TRAE LOS LINK DE LAS SUBCATEGORIAS
+     */
+
+    protected function getSubCategoriesLink($jsonCategoryLink, $filterBy = null) {
+        $subcategories = [];
+        //SI EL FILTRO ES NULL
+        if (is_null($filterBy)) {
+            foreach ($jsonCategoryLink as $row) {
+                foreach ($row as $row1) {
+                    foreach ($row1['subCategory'] as $link) {
+                        $subcategories[] = $link;
+                    }
+                }
+            }
+        } else {
+            //SI EL FILTRO NO ES NULL
+            foreach ($jsonCategoryLink as $row) {
+                foreach ($row as $row1) {
+                    foreach ($row1['subCategory'] as $link) {
+                        //VALIDA SI LA PALABRA SE ENCUENTRA EN EL LINK
+                        if (strpos($link, $filterBy) !== false) {
+                            $subcategories[] = $link;
+                        }
+                    }
+                }
+            }
+        }
+        return $subcategories;
+    }
+
+    /*
+     * BUSCA LOS PRODUCTOS ´POR NOMBRE DEL PRODUCTO
+     */
+    protected function findProductsByName($arrayFilter) {
+        $this->findProductsBaseQuery();
+    }
+
+    /*
+     * BUSCA LOS PRODUCTOS ´FILTRADO SOLO POR RETAIL
+    */
+    protected function findProductsByStore($arrayFilter) {
+        $this->findProductsBaseQuery();
+    }    
+    
+    /*
+     * BUSCA LOS PRODUCTOS FILTRADOS´POR PRECIO
+     */
+    protected function findProductsByPrice($arrayFilter) {
+        $this->findProductsBaseQuery();
+    }    
+    
+    /*
+     * BUSCA LOS PRODUCTOS ´FILTRADOS POR DESCUENTO DE INTERNET
+     */
+    protected function findProductsByInternetDiscount($arrayFilter) {
+        $this->findProductsBaseQuery();
+    }
+
+    /*
+     * BUSCA LOS PRODUCTOS ´FILTRADOS POR DESCUENTO DE TARJETA(CORRESPONDINTE A CADA RETAIL)
+     */
+    protected function findProductsByCardDiscount($arrayFilter) {        
+        $this->findProductsBaseQuery();
+    }
+
+    /*
+     * ESTE METODO SIRVE PARA FILTRAR POR CUALQUIER OTRO PARAMETRO QUE SE REQUIERA
+    */    
+    protected function findProductsBaseQuery(){
+        
+    }
+    
+    
 }
