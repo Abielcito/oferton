@@ -33,6 +33,7 @@ Route::resource('/hites', 'HitesController');
 //DANIEL
 Route::resource('/paris', 'ParisController');
 Route::get('/parisLink', 'ParisController@getLinksParis');
+Route::get('/getDataParis', 'ParisController@getDataRetail');
 
 
 //ALEX

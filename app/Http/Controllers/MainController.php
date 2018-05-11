@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\StoreCategory;
 use App\Models\Store;
+use Illuminate\Support\Str;
 
 class MainController extends Controller {
 
@@ -108,46 +109,131 @@ class MainController extends Controller {
     }
 
     /*
-     * BUSCA LOS PRODUCTOS ´POR NOMBRE DEL PRODUCTO
+     * BUSCA LOS PRODUCTOS FILTRADO SOLO POR RETAIL
      */
-    protected function findProductsByName($arrayFilter) {
-        $this->findProductsBaseQuery();
+
+    protected function findProductsByStore($store) {
+        $arrayFilter = [['store_id', '=', $store]];
+        $result = $this->findProductsBaseQuery($arrayFilter);
+        $customResult = [];
+        foreach ($result as $value) {
+            $jsonDetail = json_decode($value['json_detail']);
+            foreach ($jsonDetail->products as $product) {
+                $customResult[] = $product;
+            }
+        }
+        return $customResult;
     }
 
     /*
-     * BUSCA LOS PRODUCTOS ´FILTRADO SOLO POR RETAIL
-    */
-    protected function findProductsByStore($arrayFilter) {
-        $this->findProductsBaseQuery();
-    }    
-    
+     * BUSCA LOS PRODUCTOS ´POR NOMBRE DEL PRODUCTO
+     */
+
+    protected function findProductsByName($store, $name) {
+        $name = strtolower($name);
+        $arrayFilter = [['store_id', '=', $store]];
+        $result = $this->findProductsBaseQuery($arrayFilter);
+        $customResult = [];
+        foreach ($result as $value) {
+            $jsonDetail = json_decode($value['json_detail']);
+            foreach ($jsonDetail->products as $product) {
+                if (strpos(strtolower($product->name), $name) !== false) {
+                    $customResult[] = $product;
+                }
+            }
+        }
+        $customResult = collect($customResult)->sortBy('name');
+        return $customResult;
+    }
+
     /*
      * BUSCA LOS PRODUCTOS FILTRADOS´POR PRECIO
      */
-    protected function findProductsByPrice($arrayFilter) {
-        $this->findProductsBaseQuery();
-    }    
-    
+
+    protected function findProductsByPrice($store, $price) {
+        $arrayFilter = [['store_id', '=', $store]];
+        $result = $this->findProductsBaseQuery($arrayFilter);
+        $customResult = [];
+        foreach ($result as $value) {
+            $jsonDetail = json_decode($value['json_detail']);
+            foreach ($jsonDetail->products as $product) {
+                if ($product->price >= $price) {
+                    $customResult[] = $product;
+                }
+            }
+        }
+        $customResult = collect($customResult)->sortBy('price')->reverse()->toArray();
+        return $customResult;
+    }
+
     /*
      * BUSCA LOS PRODUCTOS ´FILTRADOS POR DESCUENTO DE INTERNET
      */
-    protected function findProductsByInternetDiscount($arrayFilter) {
-        $this->findProductsBaseQuery();
+
+    protected function findProductsByInternetDiscount($store, $internetDiscount) {
+        $arrayFilter = [['store_id', '=', $store]];
+        $result = $this->findProductsBaseQuery($arrayFilter);
+        $customResult = [];
+        foreach ($result as $value) {
+            $jsonDetail = json_decode($value['json_detail']);
+            foreach ($jsonDetail->products as $product) {
+                if ($product->discountPercentInternet >= $internetDiscount) {
+                    $customResult[] = $product;
+                }
+            }
+        }
+        $customResult = collect($customResult)->sortBy('discountPercentInternet')->reverse()->toArray();
+        return $customResult;
     }
 
     /*
      * BUSCA LOS PRODUCTOS ´FILTRADOS POR DESCUENTO DE TARJETA(CORRESPONDINTE A CADA RETAIL)
      */
-    protected function findProductsByCardDiscount($arrayFilter) {        
-        $this->findProductsBaseQuery();
+
+    protected function findProductsByCardDiscount($store, $cardDiscount) {
+        $arrayFilter = [['store_id', '=', $store]];
+        $result = $this->findProductsBaseQuery($arrayFilter);
+        $customResult = [];
+        foreach ($result as $value) {
+            $jsonDetail = json_decode($value['json_detail']);
+            foreach ($jsonDetail->products as $product) {
+                if ($product->discountPercentWithCard >= $cardDiscount) {
+                    $customResult[] = $product;
+                }
+            }
+        }
+        
+        $customResult = collect($customResult)->sortBy('discountPercentWithCard')->reverse()->toArray();
+        return $customResult;
     }
 
     /*
      * ESTE METODO SIRVE PARA FILTRAR POR CUALQUIER OTRO PARAMETRO QUE SE REQUIERA
-    */    
-    protected function findProductsBaseQuery(){
-        
+     */
+
+    protected function findProductsBaseQuery($arrayFilters) {
+        $storeCategory = StoreCategory::where($arrayFilters)->get();
+        return $storeCategory;
+    }
+
+
+    /*
+     * ESTE METODO SIRVE PARA ARMAR EL ARRAY DE PRODUCTOS
+     */    
+    private function formatArrayProducts($array){
+        $customResult = [];
+        foreach ($array as $value) {
+            $jsonDetail = json_decode($value['json_detail']);
+            foreach ($jsonDetail->products as $product) {
+                $customResult[] = $product;
+            }
+        }
+        return $customResult;
     }
     
-    
 }
+
+
+
+
+

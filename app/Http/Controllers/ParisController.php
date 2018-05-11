@@ -160,4 +160,29 @@ class ParisController extends MainController {
         dd($this->linksCategories);
     }
 
+    public function getDataRetail() {
+        
+        //-------------------RETAIL---------------------------------------------
+        $store = 1;
+        //$result = $this->findProductsByStore($store);
+
+        ////-----------------NAME-----------------------------------------------        
+        //$name = 'Notebook';
+        //$result = $this->findProductsByName($store, $name);
+        
+        ////-----------------PRICE 0-100----------------------------------------
+        //$price = 1000000;
+        //$result = $this->findProductsByPrice($store, $price);
+        
+        ////-----------------DESCUENTO DE INTERET RANGE 0-100-------------------
+        //$internetDiscount = 30;
+        //$result = $this->findProductsByInternetDiscount($store, $internetDiscount);
+
+        ////-----------------DESCUENTO DE TARJETA RANGE 0-100-------------------
+        $cardDiscount = 35;
+        $result = $this->findProductsByCardDiscount($store, $cardDiscount);        
+        
+        dd($result);
+    }
+
 }
