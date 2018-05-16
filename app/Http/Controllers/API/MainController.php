@@ -1,12 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\API\CreateParisAPIRequest;
+use App\Http\Requests\API\UpdateParisAPIRequest;
 use App\Models\StoreCategory;
 use App\Models\Store;
+use App\Http\Controllers\AppBaseController;
+use InfyOm\Generator\Criteria\LimitOffsetCriteria;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Response;
 
-class MainController extends Controller {
+class MainController extends AppBaseController {
 
     /**
      * Reemplaza los caracteres y letras retornando
