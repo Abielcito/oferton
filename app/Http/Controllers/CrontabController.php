@@ -19,17 +19,7 @@ class CrontabController extends MainController
     }
     
     
-    //PRUEBA DE CRONTAB
-    public function deleteRow() {
-        TestCrontab::find(2)->delete();
-        TestCrontab::find(3)->delete();
-    }
-    
-    
-    
     public function getProductsParis(){
-        
-        die("FECHA = ".date('Y-m-d H:i:s'));
         
         $store = $this->findStoreByName('paris');
         if (!$store) {
