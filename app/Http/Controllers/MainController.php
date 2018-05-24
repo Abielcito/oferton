@@ -62,6 +62,18 @@ class MainController extends Controller {
         return $storeCategory;
     }
 
+
+    /*
+     * VALIDA SI YA EXISTE UNA BUSQUEDA POR EL LINK SOLICITADO
+     * EN UN RANGO DE FECHAS
+     */
+    protected function findStoreCategoryByLinkByDateRange($link,$dateFrom,$dateTo) {
+        $storeCategory = StoreCategory::where('find_by_link', $link)
+        ->whereBetween('created_at', [$dateFrom, $dateTo])
+        ->get();
+        return $storeCategory;
+    }
+
     /*
      * GUARDAR NUEVA BUSQUEDA DE OFERTAS EN RETAIL
      */

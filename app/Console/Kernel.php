@@ -26,6 +26,11 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        
+        
+        //PRUEBA CRONTAB BORRANDO REGISTROS DE LA BASE DE DATOS
+        //$schedule->call('App\Http\Controllers\CrontabController@deleteRow')->everyMinute();
+        $schedule->call('App\Http\Controllers\CrontabController@getProductsParis')->dailyAt('18:39');
     }
 
     /**
