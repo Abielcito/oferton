@@ -35,6 +35,7 @@ Route::resource('/paris', 'ParisController');
 Route::get('/parisLink', 'ParisController@getLinksParis');
 Route::get('/getDataParis', 'ParisController@getDataRetail');
 Route::get('/getProductsParis','CrontabController@getProductsParis');
+Route::get('/envioMailOfertas','ParisController@envioMailOfertas');
 
 //ALEX
 Route::resource('/ripley', 'RipleyController');

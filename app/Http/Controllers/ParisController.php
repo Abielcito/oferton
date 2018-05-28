@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Mail\DealsShipped;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Goutte;
 
@@ -185,4 +186,9 @@ class ParisController extends MainController {
         dd($result);
     }
 
+    public function envioMailOfertas(){
+        Mail::to('garciafebresd@gmail.com')->send(new DealsShipped());
+        dd('mail enviado');
+    }
+    
 }
