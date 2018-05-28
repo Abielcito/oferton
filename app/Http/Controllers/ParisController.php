@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Mail\DealsShipped;
+use App\Mail\EmailWithMarkdown;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Goutte;
@@ -187,7 +188,8 @@ class ParisController extends MainController {
     }
 
     public function envioMailOfertas(){
-        Mail::to('garciafebresd@gmail.com')->send(new DealsShipped());
+        //Mail::to('garciafebresd@gmail.com')->send(new DealsShipped());
+        Mail::to('garciafebresd@gmail.com')->send(new EmailWithMarkdown());
         dd('mail enviado');
     }
     
