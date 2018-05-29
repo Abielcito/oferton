@@ -23,22 +23,20 @@ class HitesController extends Controller
         $crawler->filter('.grid_mode > li')->each(function ($node, $index) {
            
             //Buscando LINK del item --------------------
-             $link = $node->filter('.product_name a')->each(function ($n, $index) {
+            $link = $node->filter('.product_name a')->each(function ($n, $index) {
 
                $link = $n->extract(array('href'));   
-
                return $link[0];
 
             });
 
             $this->products[$index]['linKProduct'] = $link[0]; 
 
-            
+
             //Buscando NAME del item ---------------
             $name = $node->filter('.product_name a')->each(function ($n, $index) {
 
                $name = $n->text();   
-
                return $name;
 
             });
@@ -50,7 +48,6 @@ class HitesController extends Controller
             $price = $node->filter('.precio_normal')->each(function ($n, $index) {
 
                $price = $n->text();   
-
                return preg_replace("/[^0-9]/", "", $price);
 
             });
@@ -62,7 +59,7 @@ class HitesController extends Controller
             $this->products[$index]['price'] = $price[0]; 
 
 
-            //Buscando precio oferta del item --------------
+            //Buscando precio con tarjeta del item --------------
             $priceWithCard = $node->filter('.precio_hites')->each(function ($n, $index) {
 
                $priceWithCard = $n->text();   
@@ -75,15 +72,26 @@ class HitesController extends Controller
 
             });
 
-            $this->products[$index]['priceWithCard'] = $priceWithCard[0]; 
-            
-            //Buscando descuento con tarjeta del item ---------------
-            $this->products[$index]['discountPercentWithCard'] = null;
-            //Buscando precio internet del item ---------------
-            $this->products[$index]['priceInternet'] = null;
-            //Buscando descuento por internet del item ---------------
-            $this->products[$index]['discountPercentInternet'] = null;
+                $this->products[$index]['priceWithCard'] = $priceWithCard[0]; 
 
+            //Buscando precio internet del item --------------
+            $priceInternet = $node->filter('.price-medium')->each(function ($n, $index) {
+
+               $priceInternet = $n->text();   
+
+               if(!isset($priceInternet[0])){
+                  $priceInternet[0] = null;
+                }
+               return preg_replace("/[^0-9]/", "", $priceInternet);
+
+            });
+
+            if(isset($priceInternet[0])){
+              $this->products[$index]['priceInternet'] = $priceInternet[0];
+            }else{
+              $this->products[$index]['priceInternet'] = $this->products[$index]['priceWithCard'];
+              $this->products[$index]['priceWithCard'] = null;
+            }
 
             //Buscando imagen del item ---------------
             $img = $node->filter('.img-responsive')->each(function ($n, $index) {
@@ -96,6 +104,33 @@ class HitesController extends Controller
 
             $this->products[$index]['img'] = $img[0];
 
+
+            //Standars
+            if($this->products[$index]['price'] == null){
+               $this->products[$index]['price'] = $this->products[$index]['priceInternet'];
+               $this->products[$index]['priceInternet'] = $this->products[$index]['priceWithCard'];
+               $this->products[$index]['priceWithCard'] = null;
+            }
+
+            $price = $this->products[$index]['price'];
+            $priceInternet = $this->products[$index]['priceInternet'];
+            $priceWithCard = $this->products[$index]['priceWithCard'];
+            
+            if($priceInternet != null && $price > 0){
+              $discount = ($priceInternet * 100) / $price;
+              $this->products[$index]['discountPercentInternet'] = 100 - intval($discount);
+            }else{
+              $this->products[$index]['discountPercentInternet'] = null;
+            }
+
+            //Calculando porcentajes de descuento con tarjeta ---------------
+            if($priceWithCard != null && $price > 0){
+              $discount = ($priceWithCard * 100) / $price;
+              $this->products[$index]['discountPercentWithCard'] = 100 - intval($discount);
+            }else{
+              $this->products[$index]['discountPercentWithCard'] = null;
+            }
+
           });//fin crawler
 
           //ESTRUCTURA DEL JSON COMPLETA
@@ -105,7 +140,7 @@ class HitesController extends Controller
               'products' => json_encode($this->products),
           ];
 
-          dd($response);
+          dd(json_encode($this->products));
 
         return view('welcome');
     }
