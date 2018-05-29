@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Mail\DealsShipped;
 use App\Mail\EmailWithMarkdown;
 use Illuminate\Support\Facades\Mail;
@@ -163,34 +164,56 @@ class ParisController extends MainController {
     }
 
     public function getDataRetail() {
-        
+
         //-------------------RETAIL---------------------------------------------
         $store = 1;
         //$result = $this->findProductsByStore($store);
-
         ////-----------------NAME-----------------------------------------------        
         //$name = 'Notebook';
         //$result = $this->findProductsByName($store, $name);
-        
         ////-----------------PRICE 0-100----------------------------------------
         //$price = 1000000;
         //$result = $this->findProductsByPrice($store, $price);
-        
         ////-----------------DESCUENTO DE INTERET RANGE 0-100-------------------
         //$internetDiscount = 30;
         //$result = $this->findProductsByInternetDiscount($store, $internetDiscount);
-
         ////-----------------DESCUENTO DE TARJETA RANGE 0-100-------------------
         $cardDiscount = 35;
-        $result = $this->findProductsByCardDiscount($store, $cardDiscount);        
-        
+        $result = $this->findProductsByCardDiscount($store, $cardDiscount);
+
         dd($result);
     }
 
-    public function envioMailOfertas(){
+    public function envioMailOfertas() {
+        $store = 1;
+        $internetDiscount = 40;
+        $result = $this->findProductsByInternetDiscount($store, $internetDiscount);
+        $tableRows = [];
+        foreach ($result as $row) {
+            $tableRows[] = [
+                '![alt text](' . $row->image . ' "Imagen del producto")'
+                , '[' . $row->name . '](' . $row->linKProduct . ')'
+                ,$row->price.'$'
+                , round($row->discountPercentInternet) . '%'
+                , round($row->discountPercentWithCard) . '%'
+            ];
+        }
+        // create instance of the table builder
+        $tableBuilder = new \MaddHatter\MarkdownTable\Builder();
+        // add some data
+        $tableBuilder->headers(['', 'Producto','Precio', 'Internet%', 'Tarjeta%']) //headers
+                ->align(['C', 'C', 'C', 'C','C']) // set column alignment
+                ->rows($tableRows);
+        // display the result
+        $dealsTable = $tableBuilder->render();
+
+        $params = [
+            'dealsTable' => $dealsTable
+        ];
+
         //Mail::to('garciafebresd@gmail.com')->send(new DealsShipped());
-        Mail::to('garciafebresd@gmail.com')->send(new EmailWithMarkdown());
-        dd('mail enviado');
+        Mail::to('garciafebresd@gmail.com')->send(new EmailWithMarkdown($params));
+        dd('mail enviado!!!');
     }
-    
+
 }

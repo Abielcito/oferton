@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Goutte;
 
-class ParisController extends MainController {
+class ParisController_ORIGINAL extends MainController {
     //C:\laragon\www\oferton\vendor\symfony\dom-crawler\Crawler.php
 
     /**

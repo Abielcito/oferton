@@ -7,18 +7,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class EmailWithMarkdown extends Mailable
-{
-    use Queueable, SerializesModels;
+class EmailWithMarkdown extends Mailable {
+
+    use Queueable,
+        SerializesModels;
+
+    public $params = [];
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
+    public function __construct($params) {
+        $this->params = $params;
     }
 
     /**
@@ -26,8 +28,8 @@ class EmailWithMarkdown extends Mailable
      *
      * @return $this
      */
-    public function build()
-    {
-        return $this->markdown('emails.deals.emailWithMarkdown');
+    public function build() {
+        return $this->markdown('emails.deals.emailWithMarkdown')->subject('Oferton | Mejores Ofertas del ' . date('H:i:s d-m-Y'));
     }
+
 }
