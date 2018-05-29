@@ -7,75 +7,48 @@ use Goutte;
 
 class HitesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    
+
     protected $products = [];
     
-    //REVIAR  Symfony\Component\DomCrawler; 
+    //REVISAR  Vendor/Symfony/dom-crawler/Crawler.php; 
     
     public function index()
     {
-        /*$crawler = Goutte::request('GET', 'https://duckduckgo.com/html/?q=Laravel');
-        
-        $nodes = $crawler->filter('.links_main')->each(function ($node, $index) {
-
-            $title = $node->filter('.result__title .result__a')->each(function ($n, $index) {
-
-               $title = $n->text();   
-
-               return $title;
-
-            });
-
-            $this->products[$index]['title'] = $title[0]; 
-
-        });
-        
-        dd($this->products);*/
 
         $url = 'https://www.hites.com/tienda/SearchDisplay?categoryId=&storeId=10151&catalogId=10051&langId=-5&sType=SimpleSearch&resultCatEntryType=2&showResultsPage=true&searchSource=Q&pageView=&beginIndex=0&pageSize=-1&searchTerm=smart+tv#facet:-7000000000000005744544839,-10027671&productBeginIndex:0&orderBy:&pageView:grid&minPrice:&maxPrice:&pageSize:&';
 
         $crawler = Goutte::request('GET', $url);
 
-        //TITULO
-
+        //Filtrar los contenedores de los productos
         $crawler->filter('.grid_mode > li')->each(function ($node, $index) {
            
-            //Buscando link del item
-            
-             $link = $node->filter('.product_name a')->each(function ($n, $index) {
+            //Buscando LINK del item --------------------
+            $link = $node->filter('.product_name a')->each(function ($n, $index) {
 
                $link = $n->extract(array('href'));   
-
                return $link[0];
 
             });
 
-            $this->products[$index]['link'] = $link[0]; 
+            $this->products[$index]['linKProduct'] = $link[0]; 
 
-            
-            //Buscando titulo del item ---------------
-            $title = $node->filter('.product_name a')->each(function ($n, $index) {
 
-               $title = $n->text();   
+            //Buscando NAME del item ---------------
+            $name = $node->filter('.product_name a')->each(function ($n, $index) {
 
-               return $title;
+               $name = $n->text();   
+               return $name;
 
             });
 
-            $this->products[$index]['title'] = $title[0]; 
+            $this->products[$index]['name'] = $name[0]; 
 
 
             //Buscando precio normal del item --------------
             $price = $node->filter('.precio_normal')->each(function ($n, $index) {
 
                $price = $n->text();   
-
-               return preg_replace("/[^0-9]/", "",$price);
+               return preg_replace("/[^0-9]/", "", $price);
 
             });
 
@@ -86,24 +59,39 @@ class HitesController extends Controller
             $this->products[$index]['price'] = $price[0]; 
 
 
-            //Buscando precio oferta del item --------------
+            //Buscando precio con tarjeta del item --------------
             $priceWithCard = $node->filter('.precio_hites')->each(function ($n, $index) {
 
                $priceWithCard = $n->text();   
 
-               return preg_replace("/[^0-9]/", "", $priceWithCard[0]);
+               if($priceWithCard == ''){
+                  $priceWithCard[0] = null;
+                }
+
+               return preg_replace("/[^0-9]/", "", $priceWithCard);
 
             });
 
-            if(isset($priceWithCard[0])){
-              if($priceWithCard[0] != null && $priceWithCard[0] != ''){
-                 $this->products[$index]['priceWithCard'] = $priceWithCard[0]; 
-              }
-            }else{
-              $priceWithCard[0] = null;
-              $this->products[$index]['priceWithCard'] = $priceWithCard[0]; 
-            }
+                $this->products[$index]['priceWithCard'] = $priceWithCard[0]; 
 
+            //Buscando precio internet del item --------------
+            $priceInternet = $node->filter('.price-medium')->each(function ($n, $index) {
+
+               $priceInternet = $n->text();   
+
+               if(!isset($priceInternet[0])){
+                  $priceInternet[0] = null;
+                }
+               return preg_replace("/[^0-9]/", "", $priceInternet);
+
+            });
+
+            if(isset($priceInternet[0])){
+              $this->products[$index]['priceInternet'] = $priceInternet[0];
+            }else{
+              $this->products[$index]['priceInternet'] = $this->products[$index]['priceWithCard'];
+              $this->products[$index]['priceWithCard'] = null;
+            }
 
             //Buscando imagen del item ---------------
             $img = $node->filter('.img-responsive')->each(function ($n, $index) {
@@ -114,18 +102,46 @@ class HitesController extends Controller
 
             });
 
-            $this->products[$index]['img'] = $img[0]; 
-        });
+            $this->products[$index]['img'] = $img[0];
 
-        $response = [
-            'retail' => 'hites',
-            'findBy' => $url,
-            'products' => $this->products,
-        ];
 
-        dd($response);
+            //Standars
+            if($this->products[$index]['price'] == null){
+               $this->products[$index]['price'] = $this->products[$index]['priceInternet'];
+               $this->products[$index]['priceInternet'] = $this->products[$index]['priceWithCard'];
+               $this->products[$index]['priceWithCard'] = null;
+            }
+
+            $price = $this->products[$index]['price'];
+            $priceInternet = $this->products[$index]['priceInternet'];
+            $priceWithCard = $this->products[$index]['priceWithCard'];
+            
+            if($priceInternet != null && $price > 0){
+              $discount = ($priceInternet * 100) / $price;
+              $this->products[$index]['discountPercentInternet'] = 100 - intval($discount);
+            }else{
+              $this->products[$index]['discountPercentInternet'] = null;
+            }
+
+            //Calculando porcentajes de descuento con tarjeta ---------------
+            if($priceWithCard != null && $price > 0){
+              $discount = ($priceWithCard * 100) / $price;
+              $this->products[$index]['discountPercentWithCard'] = 100 - intval($discount);
+            }else{
+              $this->products[$index]['discountPercentWithCard'] = null;
+            }
+
+          });//fin crawler
+
+          //ESTRUCTURA DEL JSON COMPLETA
+          $response = [
+              'retail' => 'hites',
+              'findBy' => $url,
+              'products' => json_encode($this->products),
+          ];
+
+          dd(json_encode($this->products));
 
         return view('welcome');
     }
-
 }
