@@ -15,6 +15,7 @@
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
+        "maddhatter/markdown-table": "^1.0",
         "weidner/goutte": "^1.0"
     },
     "require-dev": {
